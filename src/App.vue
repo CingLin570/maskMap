@@ -1,5 +1,18 @@
 <template>
   <div id="app">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Navbar</a>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav w-100 justify-content-end">
+      <li class="nav-item d-flex align-items-center">
+        <span>{{ todayTime }}</span>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Features</a>
+      </li>
+    </ul>
+  </div>
+</nav>
     <div class="row no-gutters">
       <div class="col-sm-3">
         <div class="toolbox">
@@ -102,6 +115,7 @@ export default {
         city: '臺北市',
         area: '大安區',
       },
+      todayTime: '',
     };
   },
   methods: {
@@ -163,6 +177,14 @@ export default {
       <small>最後更新時間: ${properties.updated}</small>`).openPopup();
       osmMap.panTo(new L.LatLng(geometry.coordinates[1], geometry.coordinates[0]));
     },
+    getTodayDate() {
+      const fullDate = new Date();
+      const yyyy = fullDate.getFullYear();
+      const MM = (fullDate.getMonth() + 1) >= 10 ? (fullDate.getMonth() + 1) : (`0${(fullDate.getMonth() + 1)}`);
+      const dd = fullDate.getDate() < 10 ? (`0${fullDate.getDate()}`) : fullDate.getDate();
+      this.todayTime = `${yyyy}/${MM}/${dd}`;
+      console.log(this.todayTime);
+    },
   },
   computed: {
     filterList() {
@@ -170,6 +192,9 @@ export default {
       return this.data.filter((item) => (item.properties.county === vm.select.city)
         && (item.properties.town === vm.select.area));
     },
+  },
+  created() {
+    this.getTodayDate();
   },
   mounted() {
     const url = 'https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json';
